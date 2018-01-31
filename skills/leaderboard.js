@@ -1,5 +1,5 @@
 /* 
-* List leaderboard
+* List & manage leaderboard
 */
 
 module.exports = function(controller) { 

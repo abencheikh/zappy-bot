@@ -1,5 +1,5 @@
 /* 
-* what happens when bot hears a ZAP message
+* triggers when bot hears a ZAP message
 */
 
 var sendZap = require('../helpers/zaps.js');

@@ -14,7 +14,7 @@ module.exports = function(giftedUserID, senderID, controller, bot) {
         
         if (nbZap == 0) {
           bot.say( {
-            text: `<@${senderID}> viens de vous envoyer un :zap: ! C'est une manière de vous dire merci pour l'aide, le soutien ou la bonne humeur que vous apportez !\n Vous pouvez faire de même en écrivant :zap: ainsi que @user dans le même message, n'hésitez pas!`,
+            text: `<@${senderID}> vient de vous envoyer un :zap: ! C'est une manière de vous dire merci pour l'aide, le soutien ou la bonne humeur que vous apportez !\n Vous pouvez faire de même en écrivant :zap: ainsi que @user dans le même message, n'hésitez pas!`,
             channel: giftedUserID
           });
         }

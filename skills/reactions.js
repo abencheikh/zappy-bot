@@ -8,7 +8,7 @@ const DIALOG_ID = 'dialog';
 
 module.exports = function(controller) { 
   controller.on('reaction_added', function(bot, message) {
-    if (message.event.reaction == 'zap' && message.event.user != message.event.item_user) {
+    if (message.event.reaction == 'croissant' && message.event.user != message.event.item_user) {
       bot.api.channels.history({token: process.env.verificationToken, channel:message.event.item.channel, count:1, inclusive: true, latest: message.event.item.ts}, function(error, response) {
         bot.sendEphemeral({
           as_user: true,
@@ -41,8 +41,7 @@ module.exports = function(controller) {
   });
 
   controller.on('interactive_message_callback', function(bot, message) {
-    console.log(message);
-    bot.replyInteractive(message, {text: ':zap:'});
+    bot.replyInteractive(message, {text: ':croissant:'});
     if (message.callback_id == PROMPT_ID) {
       if (message.actions[0].name == 'yes') {
         var dialog = bot.createDialog(
@@ -57,7 +56,7 @@ module.exports = function(controller) {
       }
       else {
         sendZap(message.actions[0].value, message.user, controller, bot);  
-        bot.say({channel: message.channel, text: `Hey <@${message.actions[0].value}> ! Tu as reçu un :zap: de la part de <@${message.user}> !`});
+        bot.say({channel: message.actions[0].value, text: `Hey ! Tu as reçu un :croissant: de la part de <@${message.user}> !`});
       }
     }                               
   });
@@ -70,7 +69,7 @@ module.exports = function(controller) {
     const { text } = message.submission;
     
     if (callbackId == DIALOG_ID && text != '') {
-      bot.say({channel: message.channel, text: `<@${giftedUserID}> : ${text} :zap:`});
+      bot.say({channel: message.channel, text: `<@${giftedUserID}> : ${text} :croissant: (de <@${message.user}>)`});
       sendZap(giftedUserID, message.user, controller, bot);
     }
 

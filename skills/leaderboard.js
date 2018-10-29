@@ -22,6 +22,8 @@ module.exports = function(controller) {
 
         var leaderboard = "";
         sortedList.map(function(user, index) {
+          if (index > constants.LEADERBOARD_SIZE) return;
+          
           if (user.id) {
             const userName = index == 0 ? ":crown: *"+userNameList[user.id]+"*" : userNameList[user.id];
             leaderboard += userName+" "+user.zaps+" :"+constants.ZAP_TAG+":\n";
@@ -29,7 +31,7 @@ module.exports = function(controller) {
         });
 
         if (leaderboard != "")
-          bot.reply(message, "*Leaderboard:*\n\n" + leaderboard);
+          bot.reply(message, "*Top "+constants.LEADERBOARD_SIZE+":*\n\n" + leaderboard);
         else
           bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :"+constants.ZAP_TAG+": !");
       });

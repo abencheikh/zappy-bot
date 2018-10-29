@@ -4,25 +4,38 @@
 
 var constants = require('../helpers/constants.js');
 
-module.exports = function(controller) { 
+module.exports = function(controller) {
   controller.hears(['leaderboard'], 'direct_message, direct_mention', function(bot, message) {
-    controller.storage.users.all(function(err, userList) {
-      var sortedList = userList.sort(function (a, b) {
-          return b.zaps - a.zaps
+    bot.api.users.list({token: process.env.verificationToken}, function(err, response) {
+      const userNameList = {};
+      const users = response.members;
+      
+      users.map(function (u) {
+        userNameList[u.id] = u.profile.display_name || u.name;
       });
+      
+      controller.storage.users.all(function(err, userList) {
+      
+        var sortedList = userList.sort(function (a, b) {
+            return b.zaps - a.zaps
+        });
 
-      var leaderboard = "";
-      sortedList.map(function(user) {
-        if (user.id) {
-          leaderboard += "<@"+user.id+"> "+user.zaps+" :"+constants.ZAP_TAG+":\n";
-        }
+        var leaderboard = "";
+        sortedList.map(function(user, index) {
+          if (user.id) {
+            const userName = index == 0 ? ":crown: *"+userNameList[user.id]+"*" : userNameList[user.id];
+            leaderboard += userName+" "+user.zaps+" :"+constants.ZAP_TAG+":\n";
+          }
+        });
+
+        if (leaderboard != "")
+          bot.reply(message, "*Leaderboard:*\n\n" + leaderboard);
+        else
+          bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :"+constants.ZAP_TAG+": !");
       });
-
-      if (leaderboard != "")
-        bot.reply(message, "Leaderboard:\n" + leaderboard);
-      else
-        bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :"+constants.ZAP_TAG+": !");
+      
     });
+    
   }); 
   
     controller.hears(['reset'], 'direct_message, direct_mention', function(bot, message) {

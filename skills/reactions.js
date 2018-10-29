@@ -1,14 +1,12 @@
 /* 
 * triggers for zaps in reactions
 */
-
+var constants = require('../helpers/constants.js');
 var sendZap = require('../helpers/zaps.js');
-const PROMPT_ID = 'prompt';
-const DIALOG_ID = 'dialog';
 
 module.exports = function(controller) { 
   controller.on('reaction_added', function(bot, message) {
-    if (message.event.reaction == 'croissant' && message.event.user != message.event.item_user) {
+    if (message.event.reaction == constants.ZAP_TAG && message.event.user != message.event.item_user) {
       bot.api.channels.history({token: process.env.verificationToken, channel:message.event.item.channel, count:1, inclusive: true, latest: message.event.item.ts}, function(error, response) {
         bot.sendEphemeral({
           as_user: true,
@@ -17,7 +15,7 @@ module.exports = function(controller) {
           attachments:[
             {
               title: 'Voulez-vous envoyer un message personnalisé ?',
-              callback_id: PROMPT_ID,
+              callback_id: constants.PROMPT_ID,
               attachment_type: 'default',
               actions: [
                 {
@@ -41,12 +39,12 @@ module.exports = function(controller) {
   });
 
   controller.on('interactive_message_callback', function(bot, message) {
-    bot.replyInteractive(message, {text: ':croissant:'});
-    if (message.callback_id == PROMPT_ID) {
+    bot.replyInteractive(message, {text: ':'+constants.ZAP_TAG+':'});
+    if (message.callback_id == constants.PROMPT_ID) {
       if (message.actions[0].name == 'yes') {
         var dialog = bot.createDialog(
           'Envoyer un remerciement',
-          DIALOG_ID + '/' + message.actions[0].value,
+          constants.DIALOG_ID + '/' + message.actions[0].value,
           'Envoyer'
         ).addText('Message','text','', {placeholder: 'un message sympa !'});
         bot.replyWithDialog(message, dialog.asObject(), function(err, res) {
@@ -56,7 +54,7 @@ module.exports = function(controller) {
       }
       else {
         sendZap(message.actions[0].value, message.user, controller, bot);  
-        bot.say({channel: message.actions[0].value, text: `Hey ! Tu as reçu un :croissant: de la part de <@${message.user}> !`});
+        bot.say({channel: message.actions[0].value, text: `Hey ! Tu as reçu un :${constants.ZAP_TAG}: de la part de <@${message.user}> !`});
       }
     }                               
   });
@@ -68,8 +66,8 @@ module.exports = function(controller) {
     const [ callbackId, giftedUserID ] = message.callback_id.split('/');
     const { text } = message.submission;
     
-    if (callbackId == DIALOG_ID && text != '') {
-      bot.say({channel: message.channel, text: `<@${giftedUserID}> : ${text} :croissant: (de <@${message.user}>)`});
+    if (callbackId == constants.DIALOG_ID && text != '') {
+      bot.say({channel: message.channel, text: `<@${giftedUserID}> : ${text} :${constants.ZAP_TAG}: (de <@${message.user}>)`});
       sendZap(giftedUserID, message.user, controller, bot);
     }
 

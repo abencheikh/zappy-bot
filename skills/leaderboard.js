@@ -2,6 +2,8 @@
 * List & manage leaderboard
 */
 
+var constants = require('../helpers/constants.js');
+
 module.exports = function(controller) { 
     controller.hears(['leaderboard'], 'direct_message, direct_mention', function(bot, message) {
         controller.storage.users.all(function(err, userList) {
@@ -12,14 +14,14 @@ module.exports = function(controller) {
           var leaderboard = "";
           sortedList.map(function(user) {
             if (user.id) {
-              leaderboard += "<@"+user.id+"> "+user.zaps+" :croissant:\n";
+              leaderboard += "<@"+user.id+"> "+user.zaps+" :"+constants.ZAP_TAG+":\n";
             }
           });
           
           if (leaderboard != "")
             bot.reply(message, "Leaderboard:\n" + leaderboard);
           else
-            bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :croissant: !");
+            bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :"+constants.ZAP_TAG+": !");
         });
     }); 
   

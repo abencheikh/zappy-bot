@@ -6,17 +6,20 @@ module.exports = function(controller) {
     controller.hears(['leaderboard'], 'direct_message, direct_mention', function(bot, message) {
         controller.storage.users.all(function(err, userList) {
           var sortedList = userList.sort(function (a, b) {
-              return a.zaps < b.zaps
+              return b.zaps - a.zaps
           });
           
           var leaderboard = "";
           sortedList.map(function(user) {
-            leaderboard += "<@"+user.id+"> "+user.zaps+" :zap:\n";
+            if (user.id) {
+              leaderboard += "<@"+user.id+"> "+user.zaps+" :croissant:\n";
+            }
           });
+          
           if (leaderboard != "")
             bot.reply(message, "Leaderboard:\n" + leaderboard);
           else
-            bot.reply(message, "No leaderboard yet, start giving some :zap: !");
+            bot.reply(message, "Pas encore de leaderboard, il est temps de distribuer quelques :croissant: !");
         });
     }); 
   

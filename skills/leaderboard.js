@@ -5,6 +5,7 @@
 var constants = require('../helpers/constants.js');
 
 module.exports = function(controller) { 
+    console.log(constants);
     controller.hears(['leaderboard'], 'direct_message, direct_mention', function(bot, message) {
         controller.storage.users.all(function(err, userList) {
           var sortedList = userList.sort(function (a, b) {

@@ -21,12 +21,13 @@ module.exports = function(controller) {
         });
 
         var leaderboard = "";
-        sortedList.map(function(user, index) {
-          if (index > constants.LEADERBOARD_SIZE) return;
-          
+        sortedList.map(function(user, index) {          
           if (user.id) {
-            const userName = index == 0 ? ":crown: *"+userNameList[user.id]+"*" : userNameList[user.id];
-            leaderboard += userName+" "+user.zaps+" :"+constants.ZAP_TAG+":\n";
+            const userName = message.event.user === user.id ? "*"+userNameList[user.id]+"*" : userNameList[user.id];
+            const pos = index === 0 ? ":crown:" : index + 1;
+            
+            if (index < constants.LEADERBOARD_SIZE || message.event.user === user.id)
+              leaderboard += pos + " - " + userName + " " + user.zaps + " :" + constants.ZAP_TAG+":\n";
           }
         });
 

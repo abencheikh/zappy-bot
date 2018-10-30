@@ -23,16 +23,11 @@ module.exports = function(controller) {
         var leaderboard = "";
         sortedList.map(function(user, index) {          
           if (user.id) {
-            let line = "";
-            const userName = userNameList[user.id];
+            const userName = message.event.user === user.id ? "*"+userNameList[user.id]+"*" : userNameList[user.id];
             const pos = index === 0 ? ":crown:" : index + 1;
             
-            if (index <= constants.LEADERBOARD_SIZE || message.event.user === user.id)
-              line = pos + " - " + userName + " " + user.zaps + " :" + constants.ZAP_TAG+":\n";
-            if (message.event.user === user.id)
-              line = "*" + line + "*\n";
-            
-            leaderboard += line;
+            if (index < constants.LEADERBOARD_SIZE || message.event.user === user.id)
+              leaderboard += pos + " - " + userName + " " + user.zaps + " :" + constants.ZAP_TAG+":\n";
           }
         });
 

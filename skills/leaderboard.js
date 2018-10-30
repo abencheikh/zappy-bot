@@ -21,12 +21,18 @@ module.exports = function(controller) {
         });
 
         var leaderboard = "";
-        sortedList.map(function(user, index) {
-          if (index > constants.LEADERBOARD_SIZE) return;
-          
+        sortedList.map(function(user, index) {          
           if (user.id) {
-            const userName = index == 0 ? ":crown: *"+userNameList[user.id]+"*" : userNameList[user.id];
-            leaderboard += userName+" "+user.zaps+" :"+constants.ZAP_TAG+":\n";
+            let line = "";
+            const userName = userNameList[user.id];
+            const pos = index === 0 ? ":crown:" : index + 1;
+            
+            if (index <= constants.LEADERBOARD_SIZE || message.event.user === user.id)
+              line = pos + " - " + userName + " " + user.zaps + " :" + constants.ZAP_TAG+":\n";
+            if (message.event.user === user.id)
+              line = "*" + line + "*\n";
+            
+            leaderboard += line;
           }
         });
 
